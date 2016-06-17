@@ -1,0 +1,30 @@
+{ "name": "1tp-registrar",
+  "version": "0.1.0",
+  "description": "Temporary service to route handshake messages between 1tp peers -- if needed.",
+  "main": "index.js",
+  "keywords": [
+    "microminion",
+    "registrar",
+    "signaling",
+    "1tp",
+    "websocket"
+  ],
+  "author": "Nico Janssens <nico.b.janssens@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^2.2.0",
+    "minimist": "^1.2.0",
+    "socket.io": "^1.4.5"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "socket.io-client": "1.4.5"
+  },
+  "engines": {
+    "node": ">=4.x.x"
+  },
+  "scripts": {
+    "start": "node index.js -c config/default.conf"
+  }
+}
