@@ -5,7 +5,7 @@ var io = require('socket.io-client')
 var chai = require('chai')
 var expect = chai.expect
 
-var wsUrl = 'https://microminion-registrar.herokuapp.com/'
+var wsUrl = 'https://onetp-registrar.herokuapp.com/'
 //var wsUrl = 'http://localhost:5000'
 
 describe('testing access to running registrar server', function () {
