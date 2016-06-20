@@ -19,12 +19,18 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5",
+    "publish": "^0.6.0",
     "socket.io-client": "1.4.5"
   },
   "engines": {
     "node": ">=4.x.x"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/microminion/1tp-registrar.git"
+  },
   "scripts": {
+    "2npm": "publish",
     "start": "node index.js -c config/default.conf"
   }
 }
