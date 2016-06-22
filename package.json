@@ -31,6 +31,7 @@
   },
   "scripts": {
     "2npm": "publish",
-    "start": "node index.js -c config/default.conf"
+    "start": "node index.js -c config/default.conf",
+    "test": "./node_modules/.bin/mocha test/*.unit.js"
   }
 }
