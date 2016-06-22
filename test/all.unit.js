@@ -5,8 +5,7 @@ var io = require('socket.io-client')
 var chai = require('chai')
 var expect = chai.expect
 
-var wsUrl = 'https://onetp-registrar.herokuapp.com/'
-//var wsUrl = 'http://localhost:5000'
+var wsUrl = process.env.ONETP_REGISTRAR
 
 describe('testing access to running registrar server', function () {
   var socket, socket2
