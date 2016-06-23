@@ -9,7 +9,7 @@ RUN apt-get -y upgrade
 
 # install nodejs 5.x.x
 RUN apt-get -y install wget
-RUN wget -qO- https://deb.nodesource.com/setup_5.x | sudo bash -
+RUN wget -qO- https://deb.nodesource.com/setup_5.x | bash -
 RUN apt-get install -y nodejs
 
 # create microminion user
