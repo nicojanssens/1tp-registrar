@@ -22,7 +22,5 @@ deployment:
   hub:
     branch: master
     commands:
-      - docker build -f docker/Dockerfile.rpi -t microminion/rpi-1tp-registrar .
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push microminion/1tp-registrar
-      - docker push microminion/rpi-1tp-registrar
