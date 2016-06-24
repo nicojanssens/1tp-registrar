@@ -1,7 +1,6 @@
 'use strict'
 
 var fs = require('fs')
-var argv = require('minimist')(process.argv.slice(2))
 var server = require('http').createServer(onHttpRequest)
 var urls = require('url')
 
@@ -9,28 +8,32 @@ var debug = require('debug')
 var debugLog = debug('microminion:1tp:registrar')
 var errorLog = debug('microminion:1tp:registrar:error')
 
-if (!argv.c) {
-  console.info('Please specify config file using -c')
-  process.exit()
-}
-var config = JSON.parse(fs.readFileSync(__dirname + '/' + argv.c, 'utf8'))
+var defaultPort = 5000
+var defaultPingInterval = 25000
+var defaultPingTimeout = 600000
+var defaultHeartbeatInterval = 60000
+
+var listeningPort = process.env.LISTENING_PORT || defaultPort
+var pingInterval = process.env.PING_INTERVAL || defaultPingInterval
+var pingTimeout = process.env.PING_TIMEOUT || defaultPingTimeout
+var heartbeatInterval = process.env.HEARTBEAT_INTERVAL || defaultHeartbeatInterval
+
 var io = require('socket.io')(server, {
-  pingInterval: config.ping_interval,
-  pingTimeout: config.ping_timeout
+  pingInterval: pingInterval,
+  pingTimeout: pingTimeout
 })
-var port = process.env.PORT || config.default_port
 var sockets = {}
 
-server.listen(port)
-debugLog('signaling server accepts socket.io requests on port ' + port)
+server.listen(listeningPort)
+debugLog('signaling server accepts socket.io requests on port ' + listeningPort)
 
 // heartbeats
-if (config.heartbeat_interval) {
-  setTimeout(sendHeartbeat, config.heartbeat_interval)
+if (heartbeatInterval) {
+  setTimeout(sendHeartbeat, heartbeatInterval)
 }
 
 function sendHeartbeat () {
-  setTimeout(sendHeartbeat, config.heartbeat_interval)
+  setTimeout(sendHeartbeat, heartbeatInterval)
   debugLog('sending ping to all clients')
   io.emit('ping', { beat: 1 })
 }

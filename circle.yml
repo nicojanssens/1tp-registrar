@@ -7,7 +7,7 @@ machine:
 dependencies:
   post:
     - docker info
-    - docker build -f docker/Dockerfile -t microminion/1tp-registrar .
+    - docker build -t microminion/1tp-registrar .
 
 test:
   pre:

@@ -1,4 +1,4 @@
-FROM resin/rpi-raspbian
+FROM ubuntu:latest
 
 MAINTAINER Nico Janssens, nico.b.janssens@gmail.com
 LABEL version="0.1"
@@ -7,11 +7,10 @@ LABEL version="0.1"
 RUN apt-get update
 RUN apt-get -y upgrade
 
-# install nodejs 5.x.x
+# install nodejs 4.x LTS
 RUN apt-get -y install wget
-RUN wget -O node.tar.gz http://nodejs.org/dist/v5.7.1/node-v5.7.1-linux-armv7l.tar.gz
-RUN tar -C /usr/local/ --strip-components=1 -zxvf node.tar.gz
-RUN rm node.tar.gz
+RUN wget -qO- https://deb.nodesource.com/setup_4.x | bash -
+RUN apt-get install -y nodejs
 
 # create microminion user
 RUN /usr/sbin/useradd --create-home --home-dir /home/microminion --shell /bin/false microminion
@@ -28,3 +27,6 @@ RUN npm install
 
 # activate debug output
 ENV DEBUG *
+
+# start server
+ENTRYPOINT ["node", "index.js"]
