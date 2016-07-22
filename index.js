@@ -10,6 +10,7 @@ var log = winstonWrapper(winston)
 log.addMeta({
   module: 'microminion:1tp:registrar'
 })
+winston.level = 'debug'
 
 var defaultPort = 5000
 var defaultPingInterval = 25000
