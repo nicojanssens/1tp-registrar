@@ -1,5 +1,6 @@
-{ "name": "1tp-registrar",
-  "version": "0.1.0",
+{
+  "name": "1tp-registrar",
+  "version": "0.1.1",
   "description": "Temporary service to route handshake messages between 1tp peers -- if needed.",
   "main": "index.js",
   "keywords": [
