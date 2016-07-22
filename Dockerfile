@@ -25,8 +25,5 @@ ADD ./ $registrar
 # install npm dependencies
 RUN npm install
 
-# activate debug output
-ENV DEBUG *
-
 # start server
 ENTRYPOINT ["node", "index.js"]
