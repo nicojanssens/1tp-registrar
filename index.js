@@ -3,10 +3,13 @@
 var fs = require('fs')
 var server = require('http').createServer(onHttpRequest)
 var urls = require('url')
+var winston = require('winston')
+var winstonWrapper = require('winston-meta-wrapper')
 
-var debug = require('debug')
-var debugLog = debug('microminion:1tp:registrar')
-var errorLog = debug('microminion:1tp:registrar:error')
+var log = winstonWrapper(winston)
+log.addMeta({
+  module: 'microminion:1tp:registrar'
+})
 
 var defaultPort = 5000
 var defaultPingInterval = 25000
@@ -25,7 +28,7 @@ var io = require('socket.io')(server, {
 var sockets = {}
 
 server.listen(listeningPort)
-debugLog('signaling server accepts socket.io requests on port ' + listeningPort)
+log.info('signaling server accepts socket.io requests on port ' + listeningPort)
 
 // heartbeats
 if (heartbeatInterval) {
@@ -34,7 +37,7 @@ if (heartbeatInterval) {
 
 function sendHeartbeat () {
   setTimeout(sendHeartbeat, heartbeatInterval)
-  debugLog('sending ping to all clients')
+  log.debug('sending ping to all clients')
   io.emit('ping', { beat: 1 })
 }
 
@@ -95,19 +98,19 @@ io.on('connection', function (socket) {
   })
 
   socket.on('pong', function (data) {
-    debugLog('pong received from client ' + socket.owner)
+    log.debug('pong received from client ' + socket.owner)
   })
 
   socket.on('disconnect', function (reason) {
     var username = socket.owner
-    debugLog('socket for user ' + username + ' has closed: reason = ' + reason)
+    log.debug('socket for user ' + username + ' has closed: reason = ' + reason)
     if (username) {
       removeClosedSocket(username)
     }
   })
 
   socket.on('error', function (e) {
-    errorLog('Socket error for peer ' + socket.remoteAddress + ': ' + e)
+    log.error('Socket error for peer ' + socket.remoteAddress + ': ' + e)
   })
 })
 
@@ -115,7 +118,7 @@ io.on('connection', function (socket) {
 function registerSocket (username, socket, onSuccess, onError) {
   // duplicate registrations are not permitted
   // if (sockets[username]) {
-  // 	errorLog('Duplicate sockets for ' + username
+  // 	log.error('Duplicate sockets for ' + username
   // 			+ ', socket will not be registered')
   // 	onError('duplicate_registration')
   // 	return
@@ -123,8 +126,8 @@ function registerSocket (username, socket, onSuccess, onError) {
 
   sockets[username] = socket
   socket.owner = username
-  debugLog('socket for ' + username + ' has been registered locally.')
-  debugLog(Object.keys(sockets).length + ' clients connected.')
+  log.debug('socket for ' + username + ' has been registered locally.')
+  log.debug(Object.keys(sockets).length + ' clients connected.')
   onSuccess('200')
 }
 
@@ -133,7 +136,7 @@ function registerSocket (username, socket, onSuccess, onError) {
 function deregisterSocket (username, onSuccess, onError) {
   // check if username is known
   if (!sockets[username]) {
-    debugLog('socket for ' + username + ' does not exist')
+    log.debug('socket for ' + username + ' does not exist')
     onSuccess('200')
     return
   }
@@ -141,24 +144,24 @@ function deregisterSocket (username, onSuccess, onError) {
   var socket = sockets[username]
   socket.owner = undefined
   delete sockets[username]
-  debugLog('Socket for ' + username + ' has been removed locally.')
-  debugLog(Object.keys(sockets).length + ' sockets left.')
+  log.debug('Socket for ' + username + ' has been removed locally.')
+  log.debug(Object.keys(sockets).length + ' sockets left.')
   // respond to client
   onSuccess('200')
 }
 
 /* forward message to target */
 function forwardMessage (target, message, onSuccess, onError) {
-  debugLog('Forwarding message ' + message.type + ' to target ' + target)
+  log.debug('Forwarding message ' + message.type + ' to target ' + target)
   var socket = sockets[target]
   if (socket) {
-    debugLog('found websocket socket for target ' + target + ', forwarding message to client.')
+    log.debug('found websocket socket for target ' + target + ', forwarding message to client.')
     socket.emit('signaling', message, function (response) {
-      debugLog('message ' + message.type + ' delivered to target ' + target + ', returning response ' + response + ' to ' + message.from)
+      log.debug('message ' + message.type + ' delivered to target ' + target + ', returning response ' + response + ' to ' + message.from)
       onSuccess(response)
     })
   } else {
-    debugLog('could not find target ' + target +
+    log.debug('could not find target ' + target +
       ', it seems it has not been registered here.')
     onError('404')
   }
@@ -168,11 +171,11 @@ function forwardMessage (target, message, onSuccess, onError) {
 function removeClosedSocket (username) {
   // check if username is known
   if (!sockets[username]) {
-    errorLog('socket for ' + username + ' does not exist')
+    log.error('socket for ' + username + ' does not exist')
     return
   }
   // delete user socket
   delete sockets[username]
-  debugLog('Socket for ' + username + ' has been removed locally.')
-  debugLog(Object.keys(sockets).length + ' sockets left.')
+  log.debug('Socket for ' + username + ' has been removed locally.')
+  log.debug(Object.keys(sockets).length + ' sockets left.')
 }

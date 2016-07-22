@@ -12,8 +12,9 @@
   "author": "Nico Janssens <nico.b.janssens@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "debug": "^2.2.0",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "winston": "^2.2.0",
+    "winston-meta-wrapper": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
